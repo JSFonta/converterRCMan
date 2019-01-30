@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Ensure that your YAML file use 2 white spaces or 1 tab for each indent. Do not mix tab and white space
+# Ensure that your YAML file use 2 white spaces for each indent. Do not mix tab and white space
 
 import sys, re
 
@@ -25,35 +25,84 @@ class Server(Entity):
 
 
 
+
+
+
+
+# This method determine the depth of an YAML object : 2 white spaces = 1 depth
+def depthOf(expression):
+	return(int(len(expression)/2))
+
+
+
+
+
+
 # Verify that basics looks okay
 if len(sys.argv) != 3:
 	print("Need path to the YAML file to parse.")
 	print("python convert.py --path PATH/TO/THE/YAML/FILE.yaml")
 	sys.exit(0)
 
-
 # Regular expression used after to define if it is category or server
-regexCategory = re.compile(r"^([\s\t]*)(\w{1,}):$")
+regexCategory = re.compile(r"^[\s\t]*(\w{1,}):$")
 regexServer = re.compile(r"^[\t\s]*-[\s\t]*(\w{1,})[\s\t](\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})[\s\t]([sS][sS][hH]|[rR][dD][pP])$")
+regexDepth = re.compile(r"^(\s{0,}).*$")
 
 # Read only the file in text based mode
 # Aim is to create linked and defined objects
 file = open(sys.argv[2], "rt")
 
 # Init the tree
-root = Entity("root", "no")
+root 			= Entity("root", "no")
+previousElem 	= root
+previousDepth 	= -1
 
+allItems = []
+
+# Read line by line until the EOF
 for line in file:
 
 	# Category case
 	if regexCategory.match(line):
 		# Catch category information
 		rawCategory = regexCategory.search(line).groups()
-
-		# Define depth
-		depth = int(len(rawCategory[0])/2)
-		print(depth)
+		e = Entity(rawCategory[0], root)
 
 	# Server case
 	if regexServer.match(line):
-		print(regexServer.search(line).groups())
+		rawServer = regexServer.search(line).groups()
+		e = Server(rawServer[0], root, rawServer[1], rawServer[2])
+
+	# Keep in memory the whole list
+	allItems.append(e)
+
+	# Compute the depth
+	depth = depthOf(regexDepth.search(line).groups()[0])
+
+	if depth == previousDepth:
+		# Same parent
+		e.parent = previousElem.parent
+
+	elif depth < previousDepth:
+		# Shallower
+		# Find the right parent
+		i = previousDepth - depth + 1
+		lastParent = previousElem
+		while i != 0 and lastParent != root:
+			lastParent = lastParent.parent
+			i -= 1
+		e.parent = lastParent
+
+	else:
+		# Deeper
+		e.parent = previousElem
+
+	# Update for next line
+	previousElem = e
+	previousDepth = depth
+
+
+# Now, construct the output, JSON file
+for item in allItems:
+	print(item.name + " from " + item.parent.name)
