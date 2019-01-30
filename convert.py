@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
-import sys
+# Ensure that your YAML file use 2 white spaces or 1 tab for each indent. Do not mix tab and white space
+
+import sys, re
 
 # Define classes
 
@@ -30,8 +32,20 @@ if len(sys.argv) != 3:
 	sys.exit(0)
 
 
+# Regular expression used after to define if it is category or server
+regexCategory = re.compile(r"^([\s\t]*)(\w{1,}):$")
+regexServer = re.compile(r"^[\t\s]*-[\s\t]*(\w{1,})[\s\t](\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})[\s\t]([sS][sS][hH]|[rR][dD][pP])$")
+
 # Read only the file in text based mode
-# 
-f = open("config.yaml", "rt")
-for x in f:
-  print(x)
+# Aim is to create linked and defined objects
+file = open(sys.argv[2], "rt")
+
+for line in file:
+
+	# Category case
+	if regexCategory.match(line):
+		print(regexCategory.search(line).groups())
+
+	# Server case
+	if regexServer.match(line):
+		print(regexServer.search(line).groups())
