@@ -1,0 +1,7 @@
+Lyon:
+	AD:
+		-Helium 192.168.3.110 rdp
+	Test:
+		-pcdaShinkenTest 10.250.200.17 ssh
+Paris:
+	-shinkenAgentPA 192.168.64.75 ssh
