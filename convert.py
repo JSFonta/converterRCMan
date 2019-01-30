@@ -40,11 +40,19 @@ regexServer = re.compile(r"^[\t\s]*-[\s\t]*(\w{1,})[\s\t](\d{1,3}\.\d{1,3}\.\d{1
 # Aim is to create linked and defined objects
 file = open(sys.argv[2], "rt")
 
+# Init the tree
+root = Entity("root", "no")
+
 for line in file:
 
 	# Category case
 	if regexCategory.match(line):
-		print(regexCategory.search(line).groups())
+		# Catch category information
+		rawCategory = regexCategory.search(line).groups()
+
+		# Define depth
+		depth = int(len(rawCategory[0])/2)
+		print(depth)
 
 	# Server case
 	if regexServer.match(line):
