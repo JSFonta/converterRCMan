@@ -11,10 +11,11 @@ import sys, re
 class Entity:
 	id = 1
 	def __init__(self, name, parent):
-		self.id 	= Entity.id
-		self.name 	= name
-		self.parent	= parent
-		Entity.id 	+= 1
+		self.id 		= Entity.id
+		self.name 		= name
+		self.parent		= parent
+		self.children 	= []
+		Entity.id 	   += 1
 
 # Leaves of the tree, inheritance of Entity
 class Server(Entity):
@@ -22,6 +23,8 @@ class Server(Entity):
 		Entity.__init__(self, name, parent)
 		self.ip 		= ip
 		self.protocol	= protocol
+		# Keep 2 ID for each server
+		Entity.id 	   += 1
 
 
 
@@ -33,9 +36,64 @@ class Server(Entity):
 def depthOf(expression):
 	return(int(len(expression)/2))
 
+# Hydrate all items with children
+def hydrateAllChildren(items):
+
+	for item in items:
+		for ite in items:
+
+			if ite.parent == item:
+
+				item.children.append(ite)
+
+def jsonify(item):
+
+	returnValue 	= "{\n"
+	if len(item.children) == 0 :
+		returnValue    += "\"$id\": \""+str(item.id)+"\",\n"
+		returnValue    += "\"DisplayName\": \""+item.name+"\",\n"
+		returnValue    += "\"IsExpanded\": false,\n"
+		if isinstance(item, Server) :
+			returnValue+= "\"ConnectionSettings\": {\n"
+			returnValue+= "\"$id\": \""+str(item.id+1)+"\",\n"
+			returnValue+= "\"Protocol\": \""+item.protocol+"\",\n"
+			returnValue+= "\"Server\": \""+item.ip+"\"\n"
+			returnValue+= "},\n"
+			returnValue+= "\"Items\": []\n"
+		returnValue    += "}"
+
+		return returnValue
+
+	returnValue    += "\"$id\": \""+str(item.id)+"\",\n"
+	returnValue    += "\"DisplayName\": \""+item.name+"\",\n"
+	returnValue    += "\"IsExpanded\": false,\n"
+	returnValue    += "\"Items\": [\n"
+
+	# TODO : To know the last child
+	for child in item.children:
+		returnValue += jsonify(child)
+		if count ==
+			returnValue += ","
+
+	returnValue    += "]\n}\n"
+
+	return returnValue
 
 
+# Just a little function to understand the whole converter ;)
+def tree(item):
 
+	if len(item.children) == 0:
+		return item.name
+
+	print(item.name + " {\n")
+
+	for child in item.children:
+		print(tree(child))
+
+	print("}")
+
+	return ""
 
 
 # Verify that basics looks okay
@@ -102,7 +160,10 @@ for line in file:
 	previousElem = e
 	previousDepth = depth
 
+allItems.insert(0, root)
 
 # Now, construct the output, JSON file
-for item in allItems:
-	print(item.name + " from " + item.parent.name)
+output = ""
+hydrateAllChildren(allItems)
+
+print(jsonify(root))

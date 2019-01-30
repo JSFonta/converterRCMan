@@ -1,10 +1,2 @@
-City:
-  AD:
-    -TestServAD 1.2.3.4 rdp
-  Test:
-    -pcdaTestAssh 123.235.456.78 ssh
-    TTEESSTT:
-      -ab 10.10.10.10 rdp
-  -test 1.2.5.4 ssh
-OtherCity:
-  -OtherPATest 172.16.0.1 ssh
+Categorie:
+  -Serveur 1.2.3.4 ssh
