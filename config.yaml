@@ -1,2 +1,11 @@
 Categorie:
-  -Serveur 1.2.3.4 ssh
+  -Serveur1 1.2.3.4 ssh
+  -Serveur2 2.3.4.5 rdp
+  SCatergorie:
+    -Serveur3 3.4.5.6 rdp
+    SSCategorie:
+      -Serveur4 4.5.6.7 ssh
+-VMRandom 0.1.2.3 ssh
+Categorie:
+  SCatergorie:
+    -VMTest 9.8.7.6 ssh

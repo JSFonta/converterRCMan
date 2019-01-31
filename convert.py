@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
 # Ensure that your YAML file use 2 white spaces for each indent. Do not mix tab and white space
+# Developped by JSFonta (https://github.com/JSFonta), 2019
+# This tool is designed for RCMan (https://github.com/nikolayarhangelov/rcman)
+# The aim is to convert a simple and easy readable YAML file to a json which works into RCMan as configuration
 
 import sys, re
 
@@ -30,8 +33,6 @@ class Server(Entity):
 
 
 
-
-
 # This method determine the depth of an YAML object : 2 white spaces = 1 depth
 def depthOf(expression):
 	return(int(len(expression)/2))
@@ -46,8 +47,12 @@ def hydrateAllChildren(items):
 
 				item.children.append(ite)
 
+
+# Convert recursively the whole objects tree to a json file
+# Must start with the tree's root
 def jsonify(item):
 
+	# Display all the JSON, with right parameters
 	returnValue 	= "{\n"
 	if len(item.children) == 0 :
 		returnValue    += "\"$id\": \""+str(item.id)+"\",\n"
@@ -69,32 +74,23 @@ def jsonify(item):
 	returnValue    += "\"IsExpanded\": false,\n"
 	returnValue    += "\"Items\": [\n"
 
-	# TODO : To know the last child
+	# Avoid coma after the last children
+	count = 0
 	for child in item.children:
+
+		# Call the same function for every children
 		returnValue += jsonify(child)
-		if count ==
+		count += 1
+		if count < len(item.children):  
 			returnValue += ","
 
 	returnValue    += "]\n}\n"
 
 	return returnValue
 
-
-# Just a little function to understand the whole converter ;)
-def tree(item):
-
-	if len(item.children) == 0:
-		return item.name
-
-	print(item.name + " {\n")
-
-	for child in item.children:
-		print(tree(child))
-
-	print("}")
-
-	return ""
-
+####################################
+# Welcome into the main program :) #
+####################################
 
 # Verify that basics looks okay
 if len(sys.argv) != 3:
@@ -166,4 +162,5 @@ allItems.insert(0, root)
 output = ""
 hydrateAllChildren(allItems)
 
+# TODO : write into a file instead of a simple print
 print(jsonify(root))
