@@ -22,9 +22,9 @@ class Entity:
 
 # Leaves of the tree, inheritance of Entity
 class Server(Entity):
-	def __init__(self, name, parent, ip, protocol):
+	def __init__(self, name, parent, conn, protocol):
 		Entity.__init__(self, name, parent)
-		self.ip 		= ip
+		self.conn 		= conn
 		self.protocol	= protocol
 		# Keep 2 ID for each server
 		Entity.id 	   += 1
@@ -62,7 +62,7 @@ def jsonify(item):
 			returnValue+= "\"ConnectionSettings\": {\n"
 			returnValue+= "\"$id\": \""+str(item.id+1)+"\",\n"
 			returnValue+= "\"Protocol\": \""+item.protocol+"\",\n"
-			returnValue+= "\"Server\": \""+item.ip+"\"\n"
+			returnValue+= "\"Server\": \""+item.conn+"\"\n"
 			returnValue+= "},\n"
 			returnValue+= "\"Items\": []\n"
 		returnValue    += "}"
@@ -100,7 +100,7 @@ if len(sys.argv) != 3:
 
 # Regular expression used after to define if it is category or server
 regexCategory = re.compile(r"^[\s\t]*(\w{1,}):$")
-regexServer = re.compile(r"^[\t\s]*-[\s\t]*(\w{1,})[\s\t](\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})[\s\t]([sS][sS][hH]|[rR][dD][pP])$")
+regexServer = re.compile(r"^[\t\s]*-[\s\t]*(\w{1,})[\s\t](.+)[\s\t]([sS][sS][hH]|[rR][dD][pP])$")
 regexDepth = re.compile(r"^(\s{0,}).*$")
 
 # Read only the file in text based mode
