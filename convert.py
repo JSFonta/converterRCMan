@@ -96,7 +96,7 @@ def jsonify(item):
 if len(sys.argv) != 3:
 	print("Need path to the YAML file to parse.")
 	print("python convert.py --path PATH/TO/THE/YAML/FILE.yaml")
-	sys.exit(0)
+	sys.exit(-1)
 
 # Regular expression used after to define if it is category or server
 regexCategory = re.compile(r"^[\s\t]*(\w{1,}):$")
@@ -105,7 +105,11 @@ regexDepth = re.compile(r"^(\s{0,}).*$")
 
 # Read only the file in text based mode
 # Aim is to create linked and defined objects
-file = open(sys.argv[2], "rt")
+try:
+	file = open(sys.argv[2], "rt")
+except Exception as e:
+	print(e)
+	sys.exit(-1)
 
 # Init the tree
 root 			= Entity("root", "no")
@@ -156,11 +160,22 @@ for line in file:
 	previousElem = e
 	previousDepth = depth
 
+file.close()
+
 allItems.insert(0, root)
 
 # Now, construct the output, JSON file
-output = ""
 hydrateAllChildren(allItems)
 
-# TODO : write into a file instead of a simple print
-print(jsonify(root))
+output = jsonify(root)
+
+# Create or just write into the file if it already exists
+try:
+	file = open("connections.json", "w")
+	file.write(output)
+	file.close()
+except Exception as e:
+	print("Cant write the output file, let's print it !")
+	print(e)
+	print("--------------")
+	print(output)

@@ -1,0 +1,13 @@
+Category:
+  -Server1 1.2.3.4 ssh
+  -Server2 2.3.4.5 rdp
+  Category:
+    -Server3 3.4.5.6 rdp
+    Category:
+      -Server4 4.5.6.7 ssh
+-VMRandom 0.1.2.3 ssh
+Category:
+  Category:
+    -VMTest 9.8.7.6 ssh
+  Category:
+    -VM 5.5.5.5 rdp
