@@ -99,8 +99,8 @@ if len(sys.argv) != 3:
 	sys.exit(-1)
 
 # Regular expression used after to define if it is category or server
-regexCategory = re.compile(r"^[\s\t]*(\w{1,}):$")
-regexServer = re.compile(r"^[\t\s]*-[\s\t]*([\w-+_\d]{1,})[\s\t](.+)[\s\t]([sS][sS][hH]|[rR][dD][pP])$")
+regexCategory = re.compile(r"^[\s\t]*([\w\d\-]{1,}):$")
+regexServer = re.compile(r"^[\t\s]*-[\s\t]*([\w\-+_\.\d]{1,})[\s\t](.+)[\s\t]([sS][sS][hH]|[rR][dD][pP])$")
 regexDepth = re.compile(r"^(\s{0,}).*$")
 
 # Read only the file in text based mode
